@@ -1,0 +1,72 @@
+{% extends './layout_forms.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block body2 %}
+<div>
+    <h3>{{template.title}}</h3>
+    <h5>Request status: {{requests.status}}</h5>
+    {% if is_approver %}
+        <form action="{% url 'approve_request' id=current_req_stage_id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Approve Request</button>
+        </form>
+    {% endif %}
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr class="table-light">
+                <th scope="col">#</th>
+                <th scope="col">Question</th>
+                <th scope="col">Response</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for field in fields %}
+                    <tr class="table-light">
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td class="table-light">{{field.1}}</td>
+                        <td class="table-light">{{field.2}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+{% endblock %}
+{% block body3 %}
+<div>
+    <table class="table table-striped">
+        <thead>
+        <tr class="table-light">
+            <th scope="col">Approval Stage</th>
+            <th scope="col">Role</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for req in request_stages %}
+                {% if req.5 == requests.approval_stage %}
+                    <tr class="bg-warning" >
+                        <th scope="row">{{req.5}}</th>
+                        <td class="bg-warning">{{req.4}}</td>
+                        <td class="bg-warning">Currently in progress</td>
+                    </tr>
+                {% else %}
+                    <tr class="table-light">
+                        <th scope="row">{{req.5}}</th>
+                        <td class="table-light">{{req.4}}</td>
+                        {% if req.1 == 0 %}
+                            <td class="table-light">Not approved</td>
+                        {% elif req.1 == 1 %}
+                            <td class="table-light">Approved</td>
+                        {% endif %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}
+

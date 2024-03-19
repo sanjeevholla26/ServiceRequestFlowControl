@@ -1,0 +1,40 @@
+{% extends './layout_forms.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block body2 %}
+<form action="{% url 'create_role' %}" method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="exampleInputEmail1">Role Name</label>
+      <input type="text" class="form-control" id="exampleInputEmail1" name="name" aria-describedby="emailHelp" placeholder="Enter the name of the role">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
+
+{% block body3 %}
+<table class="table table-striped">
+    <thead>
+    <tr class="table-light">
+        <th scope="col">#</th>
+        <th scope="col">Role Name</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for role in roles %}
+            <tr class="table-light">
+                <th scope="row">{{forloop.counter}}</th>
+                <td class="table-light">{{role.1}}</td>
+                <td class="table-light">
+                    <form action="{% url 'delete_role' id=role.0 %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

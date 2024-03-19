@@ -1,0 +1,42 @@
+{% extends './layout_forms.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block body2 %}
+<h2>All Requests/Applications created by you</h2>
+{% endblock %}
+
+{% block body3 %}
+<table class="table table-striped">
+    <thead>
+    <tr class="table-light">
+        <th scope="col">#</th>
+        <th scope="col">Template title</th>
+        <th scope="col">Status</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for req in requests %}
+            {% if req.1 == "Approved" %}
+                <tr class="bg-success">
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td class="bg-success">{{req.2}}</td>
+                    <td class="bg-success">{{req.1}}</td>
+                    <td class="bg-success"><a href="{% url 'template_request' id=req.0 %}"><button type="button" class="btn btn-primary">View</button>
+                    </a></td>
+                </tr>
+            {% else %}
+                <tr class="table-light">
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td class="table-light">{{req.2}}</td>
+                    <td class="table-light">{{req.1}}</td>
+                    <td class="table-light"><a href="{% url 'template_request' id=req.0 %}"><button type="button" class="btn btn-primary">View</button>
+                    </a></td>
+                </tr>
+
+            {% endif %}
+
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

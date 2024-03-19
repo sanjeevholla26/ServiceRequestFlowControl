@@ -1,0 +1,66 @@
+{% extends './layout_header.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block body1 %}
+{% if request.user.is_authenticated %}
+
+<style>
+    .home{
+        max-width: 700px;
+        margin: auto;
+        margin-top: 10%;
+        color: white;
+    }
+    .username{
+        margin-bottom: 3rem;
+    }
+</style>
+
+<div class="home">
+    <div class="username">
+        <h3>Welcome {{request.user.username}} !!</h3>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr class="table-light">
+            <th scope="col">#</th>
+            <th scope="col">Info</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="table-light">
+            <th scope="row">1</th>
+            <td class="table-light">See all the applications</td>
+            <td class="table-light"><a href="{% url 'templates' %}"><button type="button" class="btn btn-primary">View</button>
+            </a></td>
+        </tr>
+        <tr class="table-light">
+            <th scope="row">2</th>
+            <td class="table-light">See all the applications that you have applied</td>
+            <td class="table-light"><a href="{% url 'requests' %}"><button type="button" class="btn btn-primary">View</button>
+            </a></td>
+        </tr>
+        <tr class="table-light" >
+            <th scope="row">3</th>
+            <td class="table-light">See approval requests</td>
+            <td class="table-light"><a href="{% url 'approval_requests' %}"><button type="button" class="btn btn-primary">View</button>
+            </a></td>
+        </tr>
+        <tr class="table-light" >
+            <th scope="row">3</th>
+            <td class="table-light">Assign Roles </td>
+            <td class="table-light"><a href="{% url 'assign_role' %}"><button type="button" class="btn btn-primary">View</button>
+            </a></td>
+        </tr>
+        <tr class="table-light" >
+            <th scope="row">3</th>
+            <td class="table-light">Create Roles </td>
+            <td class="table-light"><a href="{% url 'create_role' %}"><button type="button" class="btn btn-primary">View</button>
+            </a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

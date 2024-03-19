@@ -1,0 +1,120 @@
+{% extends './layout_forms.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block body2 %}
+    <h2>{{template.title}}</h2>
+    <a href="{% url 'create_request' id=template.id %}"><button type="button" class="btn btn-primary">Create New Request</button></a>
+
+    {% if request.user.is_admin %}
+    <form action="{% url 'create_field' id=template.id %}" method="post" style="margin-top: 40px;">
+        {% csrf_token %}
+        <h4>Add Fields</h4>
+        <div class="form-group">
+        <label for="exampleInputEmail1">Enter new field</label>
+        <input type="text" class="form-control" id="exampleInputEmail1" name="question" aria-describedby="emailHelp" placeholder="Enter the question">
+        </div>
+        <button type="submit" class="btn btn-primary">Create new Field</button>
+    </form>
+
+    <form action="{% url 'create_approval' id=template.id %}" method="post" style="margin-top: 40px;">
+        {% csrf_token %}
+        <h4>Add Approvals</h4>
+        <div class="form-group">
+            <label for="exampleFormControlSelect1">Select Role</label>
+            <select name="role" class="form-control" id="exampleFormControlSelect1">
+                <option selected>Select Role</option>
+                {% for role in all_roles %}
+                    <option value="{{role.0}}">{{role.1}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Add new approver</button>
+    </form>
+
+    {% endif %}
+{% endblock %}
+
+{% block body3 %}
+<style>
+    .tables{
+        display: flex;
+        gap: 10px;
+    }
+</style>
+<div class="tables">
+    <table class="table table-striped">
+        <thead>
+        <tr class="table-light">
+            <th scope="col">#</th>
+            <th scope="col">Field</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for field in fields %}
+                <tr class="table-light">
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td class="table-light">{{field.1}}</td>
+
+                    <td class="table-light">
+                        {% if request.user.is_admin %}
+                            <form action="#" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table class="table table-striped">
+        <thead>
+        <tr class="table-light">
+            <th scope="col">Stage</th>
+            <th scope="col">Role</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for approval in approvals %}
+                <tr class="table-light">
+                    <th scope="row">{{approval.1}}</th>
+                    <td class="table-light">{{approval.3}}</td>
+
+                    <td class="table-light">
+                        {% if request.user.is_admin %}
+                            <form action="#" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<table class="table table-striped">
+    <thead>
+    <tr class="table-light">
+        <th scope="col">Request number</th>
+        <th scope="col">Request Approved</th>
+        <th scope="col">Details</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for req in user_requests %}
+            <tr class="table-light">
+                <th scope="row">{{forloop.counter}}</th>
+                <td class="table-light">{{req.1}}</td>
+
+                <td class="table-light">
+                    <a href="{% url 'template_request' id=req.0 %}"><button type="button" class="btn btn-primary">View</button>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

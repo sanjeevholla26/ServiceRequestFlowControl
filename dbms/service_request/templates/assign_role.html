@@ -1,0 +1,57 @@
+{% extends './layout_forms.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block body2 %}
+{% if request.user.is_authenticated %}
+    <h3>Assign roles</h3>
+    <form action="{% url 'assign_role' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="exampleFormControlSelect1">Select User</label>
+            <select name="user_id" class="form-control" id="exampleFormControlSelect1">
+                <option selected>Select User</option>
+                {% for user in all_users %}
+                    <option value="{{user.id}}">{{user.username}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlSelect1">Select Role</label>
+            <select name="role_id" class="form-control" id="exampleFormControlSelect1">
+                <option selected>Select Role</option>
+                {% for role in all_roles %}
+                    <option value="{{role.id}}">{{role.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+{% endif %}
+{% endblock %}
+{% block body3 %}
+<table class="table table-striped">
+    <thead>
+    <tr class="table-light">
+        <th scope="col">#</th>
+        <th scope="col">Username</th>
+        <th scope="col">Role Name</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for ass in assignments %}
+            <tr class="table-light">
+                <th scope="row">{{forloop.counter}}</th>
+                <td class="table-light">{{ass.1}}</td>
+                <td class="table-light">{{ass.2}}</td>
+                <td class="table-light">
+                    <form action="{% url 'delete_assignment' id=ass.0 %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

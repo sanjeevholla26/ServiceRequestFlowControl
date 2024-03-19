@@ -1,0 +1,15 @@
+{% extends './layout_forms.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block body2 %}
+<form action="{% url 'create_request' id=template.0 %}" method="post">
+    {% csrf_token %}
+    {% for feild in fields %}
+        <div class="form-group">
+            <label for="{{feild.0}}">{{feild.1}}</label>
+            <input type="text" name="{{feild.0}}" id="{{feild.0}}" class="form-control">
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

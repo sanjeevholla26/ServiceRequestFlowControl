@@ -1,0 +1,92 @@
+{% extends './layout_header.html' %}
+{% load static %}
+{% block title %} Login {% endblock %}
+{% block body1 %}
+    <div class="form-container">
+        <div class="form-container-heading">
+            <h4>Login</h4>
+            {% if error_message is not none %}
+                <div class="alert alert-danger" role="alert">
+                    {{error_message}}
+                </div>
+            {%endif %}
+        </div>
+
+        <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="username">Enter your username:</label>
+                <input type="text" id="username" name="username" placeholder="Username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Enter your password:</label>
+                <input type="password" id="password" name="password" placeholder="Password">
+            </div>
+
+            <button type="submit" class="form-container-button">Submit</button>
+        </form>
+    </div>
+    <style>
+        form {
+            display: grid;
+            grid-template-rows: max-content 1fr;
+            gap: 10px;
+            max-width: 300px;
+            margin: auto;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: rgb(104, 104, 104);
+        }
+
+        input {
+            border: none;
+            border-bottom: 1px solid #000;
+            outline: none;
+            background-color: transparent;
+            padding: 8px;
+            padding-left: 0px;
+            color: red;
+        }
+
+        input::placeholder{
+            color: rgb(255, 138, 138);
+        }
+
+        .form-container-button {
+            margin-top: 15px;
+            padding: 7px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        .form-container-button:hover {
+            background-color: #45a049;
+        }
+        .form-container{
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .form-container-heading>h4{
+            font-weight: 910;
+            font-family:sans-serif;
+            letter-spacing: 2px;
+            border-bottom: solid 1px;
+            padding-left: 10px ;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}

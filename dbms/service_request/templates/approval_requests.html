@@ -1,0 +1,32 @@
+{% extends './layout_forms.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block body2 %}
+<h2>Approval Requests</h2>
+{% endblock %}
+
+{% block body3 %}
+<table class="table table-striped">
+    <thead>
+    <tr class="table-light">
+        <th scope="col">#</th>
+        <th scope="col">Template title</th>
+        <th scope="col">User</th>
+        <th scope="col">Approval Stage</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for req in approval_requests %}
+            <tr class="table-light">
+                <th scope="row">{{forloop.counter}}</th>
+                <td class="table-light">{{req.6}}</td>
+                <td class="table-light">{{req.5}}</td>
+                <td class="table-light">{{req.7}}</td>
+                <td class="table-light"><a href="{% url 'template_request' id=req.0 %}"><button type="button" class="btn btn-primary">Vieww</button>
+                </a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

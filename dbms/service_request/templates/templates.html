@@ -1,0 +1,46 @@
+{% extends './layout_forms.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block body2 %}
+    <h2>Templates</h2>
+    {% if request.user.is_admin %}
+    <form action="{% url 'templates' %}" method="post" style="margin-top: 40px;">
+        {% csrf_token %}
+        <div class="form-group">
+        <label for="exampleInputEmail1">Template title</label>
+        <input type="text" class="form-control" id="exampleInputEmail1" name="title" aria-describedby="emailHelp" placeholder="Enter the title of the template">
+        </div>
+        <button type="submit" class="btn btn-primary">Create new template</button>
+    </form>
+    {% endif %}
+{% endblock %}
+
+{% block body3 %}
+<table class="table table-striped">
+    <thead>
+    <tr class="table-light">
+        <th scope="col">#</th>
+        <th scope="col">Template Title</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for template in templates %}
+            <tr class="table-light">
+                <th scope="row">{{forloop.counter}}</th>
+                <td class="table-light">{{template.1}}</td>
+
+                <td class="table-light">
+                    {% if request.user.is_admin %}
+                        <form action="{% url 'delete_template' id=template.0 %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    {% endif %}
+                    <a href="{% url 'template' id=template.0 %}"><button type="button" class="btn btn-primary">View</button></a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

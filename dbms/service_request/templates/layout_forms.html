@@ -1,0 +1,30 @@
+{% extends './layout_header.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block body1 %}
+{% if request.user.is_authenticated %}
+<style>
+    .cont{
+        background: white;
+        max-width: 1000px;
+        margin: auto;
+        border-radius: 1rem;
+        padding: 40px;
+        margin-top: 5rem;
+    }
+    .cont-2{
+        max-width: 1000px;
+        margin: auto;
+        margin-top: 5rem;
+    }
+</style>
+<div class="cont">
+    {% block body2%}
+    {% endblock %}
+</div>
+<div class="cont-2">
+{% block body3 %}
+{% endblock %}
+</div>
+{% endif %}
+{% endblock %}

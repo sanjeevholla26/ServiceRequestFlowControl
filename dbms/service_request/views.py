@@ -309,7 +309,6 @@ def create_approval(request, id):
                 """, [template_id])
                 max_stage_result = cursor.fetchone()
                 max_stage = max_stage_result[0] if max_stage_result[0] is not None else 0
-                print("########################################", max_stage)
 
                 # Insert a new approval using SQL query
                 cursor.execute("""
@@ -618,3 +617,132 @@ def get_all_requests(request):
         return render(request, "all_requests.html", {
             "requests" : all_requests
         })
+
+def create_sendback(request, id):
+    if request.user.is_authenticated:
+        user_id = request.user.id
+
+        if request.method == "POST":
+            with connection.cursor() as cursor:
+
+                is_approver = False
+                cursor.execute("""
+                    SELECT A.role_id, REQ.status
+                    FROM RequestStage RS
+                    INNER JOIN Approval A ON RS.approval_id = A.id
+                    INNER JOIN Request REQ ON RS.request_id = REQ.id
+                    WHERE RS.id = %s
+                """, [id])
+
+                response_query = cursor.fetchone()
+                cursor.execute("""
+                    SELECT COUNT(*) FROM Assignment
+                    WHERE user_id = %s AND role_id = %s
+                """, [user_id, response_query[0]])
+                approver = cursor.fetchone()
+
+                if approver[0] > 0 and response_query[1] == "InProgress":
+                    question = request.POST["question"]
+                    cursor.execute("""
+                        INSERT INTO Sendback (requeststage_id, question)
+                        VALUES (%s, %s)
+                    """, [id, question])
+                    # create a new Sendback with the question as the above and the requeststage also.
+
+                    return HttpResponseRedirect(reverse(approval_requests))
+
+def all_sendbacks(request, id):
+    if request.user.is_authenticated :
+        user_id = request.user.id
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                    SELECT A.role_id
+                    FROM Request R
+                    INNER JOIN RequestStage RS ON RS.request_id = R.id
+                    INNER JOIN Approval A ON RS.approval_id = A.id
+                    WHERE R.id = %s
+                    LIMIT 1
+                """, [id])
+            all_roles = cursor.fetchall()
+
+
+            cursor.execute("""
+                    SELECT R.user_id, U.username, T.title, status, approval_stage
+                    FROM Request R
+                    INNER JOIN Template T ON T.id = R.template_id
+                    INNER JOIN User U ON U.id = R.user_id
+                    where R.id = %s
+                """, [id])
+            req_details = cursor.fetchone()
+
+            print(all_roles)
+            is_approver = False
+            for role in all_roles:
+                cursor.execute("""
+                    SELECT COUNT(*) FROM Assignment
+                    WHERE user_id = %s AND role_id = %s
+                """, [user_id, role])
+
+                approver = cursor.fetchone()
+
+                if approver[0] > 0:
+                    is_approver = True
+
+                    break
+
+            if is_approver or user_id == req_details[0]:
+                cursor.execute("""
+                    SELECT S.question, S.response, R.name, S.id
+                    FROM Request REQ
+                    INNER JOIN RequestStage RS ON RS.request_id = REQ.id
+                    INNER JOIN Sendback S ON S.requeststage_id = RS.id
+                    INNER JOIN Approval A ON A.id = RS.approval_id
+                    INNER JOIN Role R ON A.role_id = R.id
+                    where REQ.id = %s
+                """, [id])
+
+                all_sendbacks = cursor.fetchall()
+
+                return render(request, "sendbacks.html", {
+                    "sendbacks" : all_sendbacks,
+                    "req_details" : req_details
+                })
+            else:
+                return HttpResponseRedirect(reverse(home))
+    else:
+        return HttpResponseRedirect(reverse(user_login))
+
+def sendback_res(request, id):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            user_id = request.user.id
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT R.user_id, S.response, R.id
+                    FROM Sendback S
+                    INNER JOIN RequestStage RS ON RS.id = S.requeststage_id
+                    INNER JOIN Request R ON R.id = RS.request_id
+                    WHERE S.id = %s
+                """, [id])
+
+                det = cursor.fetchone()
+
+                if det[0] == user_id and det[1] is None:
+                    res = request.POST["response"]
+
+                    cursor.execute("""
+                        UPDATE Sendback SET response = %s
+                        WHERE id = %s
+                    """, [res, id])
+                    cursor.execute("""
+                        UPDATE Request  SET status = %s
+                        WHERE id = %s
+                    """, ['InProgress', det[2]])
+
+                return HttpResponseRedirect(reverse(template_request, args=(det[2], )))
+        else:
+            return HttpResponseRedirect(reverse(home))
+    else:
+        return HttpResponseRedirect(reverse(home))
+
+

@@ -21,4 +21,7 @@ urlpatterns = [
     path("approval_requests/", views.approval_requests, name="approval_requests"),
     path("approve_request/<int:id>", views.approve_request, name="approve_request"),
     path("requests/", views.get_all_requests, name="requests"),
+    path("create_sendback/<int:id>", views.create_sendback, name="create_sendback"),
+    path("sendbacks/<int:id>", views.all_sendbacks, name="sendbacks"),
+    path("sendback_reponse/<int:id>", views.sendback_res, name="sendback_response"),
 ]

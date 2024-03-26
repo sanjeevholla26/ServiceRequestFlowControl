@@ -1,0 +1,67 @@
+{% extends './layout_forms.html' %}
+{% load static %}
+{% block title %} Home {% endblock %}
+{% block body2 %}
+<h2>Sendbacks</h2>
+<h5>Template: {{req_details.2}}</h5>
+<h5>Request User: {{req_details.1}}</h5>
+{% endblock %}
+
+{% block body3 %}
+<table class="table table-striped">
+    <thead>
+    <tr class="table-light">
+        <th scope="col">#</th>
+        <th scope="col">Approver</th>
+        <th scope="col">Query</th>
+        <th scope="col">Response</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for sen in sendbacks %}
+            <tr class="table-light">
+                <th scope="row">{{forloop.counter}}</th>
+                <td class="table-light">{{sen.2}}</td>
+                <td class="table-light">{{sen.0}}</td>
+                    <td class="table-light"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                        View
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Add the query and sendback the request</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <h4>Query: {{sen.0}}</h4>
+                                </div>
+                                {% if sen.1 is NONE %}
+                                    <form action="{% url 'sendback_response' id=sen.3 %}" method="post" class="sendback">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="qq{{sen.3}}">Enter Response</label>
+                                            <input type="text" name="response" id="qq{{sen.3}}" class="form-control">
+                                        </div>
+                                        <button type="submit" class="btn btn-success">Submit Response</button>
+                                    </form>
+                                {% else %}
+                                    <h4>Response: {{sen.1}}</h4>
+                                {% endif %}
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div></td>
+             </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

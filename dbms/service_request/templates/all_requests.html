@@ -23,6 +23,16 @@
                     <td class="bg-success">{{req.2}}</td>
                     <td class="bg-success">{{req.1}}</td>
                     <td class="bg-success"><a href="{% url 'template_request' id=req.0 %}"><button type="button" class="btn btn-primary">View</button>
+                    </a><a href="{% url 'sendbacks' id=req.0 %}"><button type="button" class="btn btn-warning">Sendbacks</button>
+                    </a></td>
+                </tr>
+            {% elif req.1 == "Sentback" %}
+                <tr class="bg-warning">
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td class="bg-warning">{{req.2}}</td>
+                    <td class="bg-warning">{{req.1}}</td>
+                    <td class="bg-warning"><a href="{% url 'template_request' id=req.0 %}"><button type="button" class="btn btn-primary">View</button>
+                    </a><a href="{% url 'sendbacks' id=req.0 %}"><button type="button" class="btn btn-warning">Sendbacks</button>
                     </a></td>
                 </tr>
             {% else %}
@@ -31,9 +41,9 @@
                     <td class="table-light">{{req.2}}</td>
                     <td class="table-light">{{req.1}}</td>
                     <td class="table-light"><a href="{% url 'template_request' id=req.0 %}"><button type="button" class="btn btn-primary">View</button>
+                    </a><a href="{% url 'sendbacks' id=req.0 %}"><button type="button" class="btn btn-warning">Sendbacks</button>
                     </a></td>
                 </tr>
-
             {% endif %}
 
         {% endfor %}

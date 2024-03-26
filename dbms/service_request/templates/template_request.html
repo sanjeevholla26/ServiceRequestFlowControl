@@ -4,13 +4,52 @@
 {% block body2 %}
 <div>
     <h3>{{template.title}}</h3>
-    <h5>Request status: {{requests.status}}</h5>
+    <h5>Request status: {{requests.status  }}</h5>
     {% if is_approver %}
         <form action="{% url 'approve_request' id=current_req_stage_id %}" method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-success">Approve Request</button>
         </form>
+        {% if requests.status == "InProgress" %}
+        <!-- <button type="button" class="btn btn-warning">Create Sendback</button>
+        <form action="{% url 'create_sendback' id=current_req_stage_id %}" method="post" class="sendback">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Create Sendback</button>
+        </form> -->
+        <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                Sendback
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Add the query and sendback the request</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'create_sendback' id=current_req_stage_id %}" method="post" class="sendback">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="qq">Enter Query</label>
+                                <input type="text" name="question" id="qq" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-success">Create Sendback</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        {% endif %}
     {% endif %}
+
     <div>
         <table class="table table-striped">
             <thead>
@@ -47,11 +86,19 @@
         <tbody>
             {% for req in request_stages %}
                 {% if req.5 == requests.approval_stage %}
-                    <tr class="bg-warning" >
-                        <th scope="row">{{req.5}}</th>
-                        <td class="bg-warning">{{req.4}}</td>
-                        <td class="bg-warning">Currently in progress</td>
-                    </tr>
+                    {% if requests.status == "Sentback" %}
+                        <tr class="bg-warning" >
+                            <th scope="row">{{req.5}}</th>
+                            <td class="bg-warning">{{req.4}}</td>
+                            <td class="bg-warning">Request Sentback</td>
+                        </tr>
+                    {% else %}
+                        <tr class="bg-warning" >
+                            <th scope="row">{{req.5}}</th>
+                            <td class="bg-warning">{{req.4}}</td>
+                            <td class="bg-warning">Currently in progress</td>
+                        </tr>
+                    {% endif %}
                 {% else %}
                     <tr class="table-light">
                         <th scope="row">{{req.5}}</th>
